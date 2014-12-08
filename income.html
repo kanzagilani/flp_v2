@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"><title>Welcome to Logistics Management System</title>
+<link rel="stylesheet" href="css/zerogrid.css">
+	<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+	<link rel="stylesheet" href="css/responsiveslides.css" />
+<
+	<!--[if lt IE 8]>
+       <div style=' clear: both; text-align:center; position: relative;'>
+         <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+           <img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." />
+        </a>
+      </div>
+    <![endif]-->
+    <!--[if lt IE 9]>
+		<script src="js/html5.js"></script>
+		<script src="js/css3-mediaqueries.js"></script>
+	<![endif]-->
+	
+	<link href='./images/favicon.ico' rel='icon' type='image/x-icon'/>
+	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/responsiveslides.js"></script>
+	<script src="js/html5sql.js"></script>
+	<script>
+    $(function () {
+      $("#slider").responsiveSlides({
+        auto: true,
+        pager: false,
+        nav: true,
+        speed: 500,
+        maxwidth: 960,
+        namespace: "centered-btns"
+      });
+    });
+  </script>
+    
+   <script type="text/javascript">
+var watchID;
+var geoLoc;
+
+var latitude=0.0 , longitude=0.0;
+function showLocation(position) {
+latitude = position.coords.latitude;
+ longitude = position.coords.longitude;
+ 
+ (latitude).toFixed(8);
+ (longitude).toFixed(8);
+ document.getElementById("long").value = (latitude).toFixed(6);
+ document.getElementById("lat").value = (longitude).toFixed(6);
+  alert("Latitude : " + document.getElementById("lat").value + " Longitude: " + document.getElementById("long").value);
+  var variableToSend = 'latitude';
+  $.post('addincome_db.php', {variable: variableToSend});
+}
+
+
+
+function errorHandler(err) {
+  if(err.code == 1) {
+    alert("Error: Access is denied!");
+  }else if( err.code == 2) {
+    alert("Error: Position is unavailable!");
+  }
+}
+function getLocationUpdate(){
+
+   if(navigator.geolocation){
+      // timeout at 5mins
+      var options = {timeout:300000};
+      geoLoc = navigator.geolocation;
+      watchID = geoLoc.watchPosition(showLocation, 
+                                     errorHandler,
+                                     options);
+   }else{
+      alert("Sorry, browser does not support geolocation!");
+   }
+}
+</script> 
+
+<script type="text/javascript"> 
+$( document ).ready(function() {
+    console.log( "ready!" );
+	$("#addIncome").click(function(e) {
+		e.preventDefault();
+  var income = $("#income").val(); 
+  var category = $("#category").val();
+  var description = $("#description").val(); 
+  var date = $("#date").val();
+  var time = $("#time").val();
+  var longi = $("#long").val();
+  var lat = $("#lat").val();
+  var dataString = 'income='+income+'&category='+category+'&description='+description+'&date='+date+'&time='+time+'&long='+longi+'&lat='+lat;
+  $.ajax({
+    type:'POST',
+    data:dataString,
+	crossDomain: true,
+    url:'http://kanza.bluenyxstudios.com/database/addincome_db.php',
+    success:function(data) {
+      alert(data);
+    }
+  });
+	});
+});
+
+
+</script> 
+</head>
+<nav>
+	<ul>
+		<li><a href="index.html">Home</a></li>
+		<li><a href="income.html">Income</a></li>
+		<li><a href="expense.html">Expense</a></li>
+		<li><a href="report.php">report</a></li>
+		<li><a href="index.html">Contact</a></li>
+	</ul>
+</nav>
+
+<body style=background-color:#9932CC;>
+<h1 style="color:white;font-size:43px;text-align:center;">ADD INCOME</h1><br><br>
+
+
+<form action="" method="post" id="incomeForm" name="incomeForm">
+  <p style="color:black;text-align:center;font-weight: bold;font-size: 20px">
+   Income: <input type="text" name="income" id="income" STYLE="color:black;font-size: 20px; border: solid 1px #000;
+    border-radius:4px; " size="25"><br><br>
+  Commodity: <select name="category" id="category" STYLE="color: black;font-size: 20px; border: solid 1px #000;
+    border-radius:4px; " size="1"><br><br><br>
+<option value="Drinks">drinks</option>
+<option value="medical_aid">medical aid</option>
+<option value="other">other</option>
+<option value="weight_loaded">weight_loaded</option>
+<option value="Maintenance ">Rents </option>
+<option value="Food">food</option>
+<option value="Food">equipments</option>
+</select>
+<br><br>
+   Description:<input type="text" name="description" id="description" STYLE="color:black;font-size: 20px; border: solid 1px #000;
+    border-radius:4px; " size="25"><br><br>
+	Date:<input type="date" name="date" id="date" STYLE="color:black;font-size: 20px; border: solid 1px #000;
+    border-radius:4px; " size="25">
+Time:<input type="time" name="time" id="time" STYLE="color:black;font-size: 20px; border: solid 1px #000;
+    border-radius:4px; " size="25"><br><br>
+
+    <input type="button" onclick="getLocationUpdate();"  
+                            value="Location"/><br><br>
+                         <input type="button" name="addIncome" id="addIncome" value="Save" STYLE="color:purple; font-weight: bold;font-size: 20px; background-color:white; border: solid 1px #000;
+    border-radius: 4px;" />    
+
+  <input type="hidden" name="long" id="long" value="" />
+  <input type="hidden" name="lat" id="lat" value="" />
+</form>
+
+
+
+	</body>
+	</html>
+	</html>
